@@ -25,7 +25,7 @@ export class TablaRegistrosComponent implements OnInit{
   selectedPageSize: number = 50;
   currentPage: number = 0;
   totalPages: number = 0;
-  params: object = {page: this.currentPage + 1,per_page:this.selectedPageSize};
+  params: object = {page: this.currentPage,per_page:this.selectedPageSize};
   idFilter: string = '';
   constructor(private apiService: ApiService) { }
 // Carga la tabla al iniciar
