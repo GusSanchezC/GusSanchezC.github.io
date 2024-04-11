@@ -25,16 +25,15 @@ export class TablaRegistrosComponent implements OnInit{
   selectedPageSize: number = 50;
   currentPage: number = 0;
   totalPages: number = 0;
-  params: object = {page: this.currentPage,per_page:this.selectedPageSize};
+  params: object = {per_page:this.selectedPageSize};
   idFilter: string = '';
   constructor(private apiService: ApiService) { }
 // Carga la tabla al iniciar
   ngOnInit(): void {
-    this.apiService.getSismos({per_page: this.selectedPageSize}).subscribe(
+    this.apiService.getSismos({page: this.currentPage + 1,per_page: this.selectedPageSize}).subscribe(
       (data: any) => {
         this.sismos_data = this.transformData(data.data);
         this.sismos_pages = data.pagination; //Obtener paginacion
-        this.currentPage = this.sismos_pages.current_page;
         this.totalPages = this.sismos_pages.total;
       },
       error => {
@@ -79,6 +78,7 @@ export class TablaRegistrosComponent implements OnInit{
     this.currentPage = event.pageIndex;
     this.selectedPageSize = event.pageSize
     this.params = { page: this.currentPage + 1, per_page: this.selectedPageSize }
+    console.log(this.params)
     this.getDataWithParams();
   }
 // Recarga los registros de la tabla aplicando los filtros
