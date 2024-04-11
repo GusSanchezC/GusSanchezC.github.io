@@ -7,7 +7,8 @@ import { Observable } from 'rxjs'
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = 'http://localhost:3000/api/v1/feature';
+  // private apiUrl = 'http://localhost:3000/api/v1/feature';
+  private apiUrl = 'https://backend-features-63bad564e0c5.herokuapp.com/' // Prueba Heroku
   constructor(private http: HttpClient) { }
   getSismos(params?: any): Observable<any> {
     let queryParams = new HttpParams();
