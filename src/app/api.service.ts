@@ -7,10 +7,10 @@ import { Observable } from 'rxjs'
   providedIn: 'root'
 })
 export class ApiService {
-  // private apiUrl = 'http://localhost:3000/api/v1/feature';
-  private apiUrl = 'https://backend-features-63bad564e0c5.herokuapp.com/api/v1/feature' // Prueba Heroku 2
+  private apiUrl = 'http://localhost:3000/api/v1/feature';
+  // private apiUrl = 'https://backend-features-63bad564e0c5.herokuapp.com/api/v1/feature' // Prueba Heroku 2
   constructor(private http: HttpClient) { }
-  getSismos(params?: any): Observable<any> {
+  getFeatures(params?: any): Observable<any> {
     let queryParams = new HttpParams();
     if (params) {
       // Agregar parámetros de filtro si se proporcionan
@@ -24,5 +24,9 @@ export class ApiService {
   getComments(params: string){
     const commentsUrl = this.apiUrl + "/"+params+"/comments";
     return this.http.get<any>(commentsUrl);
+  }
+  addComment(params: string, commentData: any): Observable<any> {
+    const commentsUrl = `${this.apiUrl}/${params}/comments`;
+    return this.http.post<any>(commentsUrl, commentData);
   }
 }

@@ -9,9 +9,8 @@
     <mat-checkbox class="example-margin" (change)="filtrar('mi')">mi</mat-checkbox>
     <mat-checkbox class="example-margin" (change)="filtrar('mb')">mb</mat-checkbox>
     <mat-checkbox class="example-margin" (change)="filtrar('mlg')">mlg&ensp;</mat-checkbox>
-    <button (click)="getDataWithParams()"> Filtrar</button>
+    <button (click)="getData()"> Filtrar</button>
 </section>
-
 <mat-paginator [length]="totalPages" [pageSize]="selectedPageSize" [pageSizeOptions]="[5, 10, 25, 100]"  [pageIndex] = "currentPage" aria-label="Select page" (page)="paginatorChange($event)"></mat-paginator>
     <table mat-table [dataSource]="sismos_data">
         <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
@@ -33,7 +32,6 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
-
 
 
   

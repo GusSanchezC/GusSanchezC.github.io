@@ -1,10 +1,13 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit, ViewChild} from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatCheckbox } from '@angular/material/checkbox'
 import { ApiService } from '../api.service';
 import { CommonModule } from '@angular/common';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { FormsModule } from '@angular/forms';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { ComentariosModalComponent } from '../comentarios-modal/comentarios-modal.component';
+
 
 
 @Component({
@@ -17,7 +20,9 @@ import { FormsModule } from '@angular/forms';
 export class TablaRegistrosComponent implements OnInit{
   sismos_data: any;
   sismos_pages: any;
-  comments_data: any;
+  
+  @ViewChild(ComentariosModalComponent) modalComponent!: ComentariosModalComponent;
+  modalRef? : BsModalRef;
   // Define las columnas de la tabla
   displayedColumns: string[] = ['id', 'magnitude', 'place', 'time', 'tsunami', 'mag_type', 'title', 'latitude', 'longitude', 'url','comentarios'];
 // Filtros
@@ -27,19 +32,11 @@ export class TablaRegistrosComponent implements OnInit{
   totalPages: number = 0;
   params: object = {per_page:this.selectedPageSize};
   idFilter: string = '';
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService, private modalService: BsModalService) { }
+  
 // Carga la tabla al iniciar
   ngOnInit(): void {
-    this.apiService.getSismos({page: this.currentPage + 1,per_page: this.selectedPageSize}).subscribe(
-      (data: any) => {
-        this.sismos_data = this.transformData(data.data);
-        this.sismos_pages = data.pagination; //Obtener paginacion
-        this.totalPages = this.sismos_pages.total;
-      },
-      error => {
-        console.error('Error al obtener los datos:', error);
-      }
-    );
+    this.getData()
   }
   // Transforma la data de la API para ser utilizada por la tabla
   transformData(data: any): any[] {
@@ -79,19 +76,20 @@ export class TablaRegistrosComponent implements OnInit{
     this.selectedPageSize = event.pageSize
     this.params = { page: this.currentPage + 1, per_page: this.selectedPageSize }
     console.log(this.params)
-    this.getDataWithParams();
+    this.getData();
   }
 // Recarga los registros de la tabla aplicando los filtros
-  getDataWithParams(){
+  getData(){
     const params = {
       id: this.idFilter,
       ...this.params,
       mag_type: this.selectedMag_types
     }
-    this.apiService.getSismos(params).subscribe(
+    this.apiService.getFeatures(params).subscribe(
       (data: any) => {
         this.sismos_data = this.transformData(data.data);
         this.sismos_pages = data.pagination;
+        this.totalPages = this.sismos_pages.total;
       },
       error => {
         console.error('Error al obtener los datos:', error);
@@ -99,15 +97,11 @@ export class TablaRegistrosComponent implements OnInit{
     );
   }
   
-  showComments(id:number){
-    this.apiService.getComments(id.toString()).subscribe(
-      (data: any) => {
-        this.comments_data = data;
-        console.log(this.comments_data)
-      },
-      error => {
-        console.error('Error al obtener los datos:', error);
+  showComments(id_comments:number){
+    this.modalRef = this.modalService.show(ComentariosModalComponent,{
+      initialState: {
+        id: id_comments
       }
-    );
+    })
   }
 }

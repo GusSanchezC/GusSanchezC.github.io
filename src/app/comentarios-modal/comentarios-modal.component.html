@@ -1,0 +1,38 @@
+
+<div class="modal-header">
+  <section>
+    <h3 class="modal-title pull-left">Comentarios</h3>
+    <button type="button" (click)="openModal2(templateNested)">Nuevo comentario</button>
+  </section>
+  <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="modalRef.hide()">
+    <span aria-hidden="true" class="visually-hidden">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <ng-container *ngFor="let data of commentsData; let i = index">
+    <div class="comment">
+      <h4>Comentario {{ i + 1}}</h4>
+      <p>{{ data.body }}</p>
+      <!-- Línea de separación -->
+      <hr class="divider">
+    </div>
+</ng-container>
+</div>
+
+<ng-template #templateNested>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Nuevo Comentario</h4>
+    <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="modalRef2?.hide()">
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form (ngSubmit)="guardarComentario()">
+      <div class="form-group">
+        <label for="comentario">Comentario:</label>
+        <textarea id="comentario" class="form-control" [(ngModel)]="nuevoComentario" name="comentario"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Guardar</button>
+    </form>
+  </div>
+</ng-template>
