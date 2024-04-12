@@ -16,9 +16,11 @@ export class ComentariosModalComponent {
   nuevoComentario: string = "";
   modalRef2?: BsModalRef;
   constructor(public modalRef: BsModalRef, private apiService: ApiService,private modalService: BsModalService) {}
+  
   ngOnInit() {
     this.getComments();
   }
+  // Carga los comentarios
   getComments(){
     this.apiService.getComments(this.id.toString()).subscribe(
       (data: any) => {
@@ -29,9 +31,11 @@ export class ComentariosModalComponent {
       }
     );
   }
+  // Abre el 2do modal para ingresar un comentario
   openModal2(template: TemplateRef<any>) {
     this.modalRef2 = this.modalService.show(template);
   }
+  // Guarda el comentario en la BD
   guardarComentario() {
     const commentData = {
       id: this.id,

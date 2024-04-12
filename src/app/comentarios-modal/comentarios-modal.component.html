@@ -1,7 +1,8 @@
-
+<!-- Modal Principal -->
 <div class="modal-header">
   <section>
     <h3 class="modal-title pull-left">Comentarios</h3>
+    <!-- Boton para crear un nuevo comentario -->
     <button type="button" (click)="openModal2(templateNested)">Nuevo comentario</button>
   </section>
   <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="modalRef.hide()">
@@ -9,6 +10,7 @@
   </button>
 </div>
 <div class="modal-body">
+  <!-- Carga de los comentarios -->
   <ng-container *ngFor="let data of commentsData; let i = index">
     <div class="comment">
       <h4>Comentario {{ i + 1}}</h4>
@@ -27,6 +29,7 @@
     </button>
   </div>
   <div class="modal-body">
+    <!-- Guarda el nuevo comentario en la BD -->
     <form (ngSubmit)="guardarComentario()">
       <div class="form-group">
         <label for="comentario">Comentario:</label>

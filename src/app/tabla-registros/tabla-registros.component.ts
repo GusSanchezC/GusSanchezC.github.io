@@ -1,35 +1,35 @@
 import { Component, OnInit, ViewChild} from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
+import { PageChangedEvent, PaginationModule } from 'ngx-bootstrap/pagination'
 import { MatCheckbox } from '@angular/material/checkbox'
 import { ApiService } from '../api.service';
 import { CommonModule } from '@angular/common';
-import { MatPaginatorModule } from '@angular/material/paginator';
 import { FormsModule } from '@angular/forms';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { ComentariosModalComponent } from '../comentarios-modal/comentarios-modal.component';
-
+import {MatInputModule} from '@angular/material/input';
 
 
 @Component({
   selector: 'app-tabla-registros',
   standalone: true,
-  imports: [MatTableModule,CommonModule,MatCheckbox,MatPaginatorModule,FormsModule],
+  imports: [MatTableModule,CommonModule,MatCheckbox,FormsModule,MatInputModule,PaginationModule],
   templateUrl: './tabla-registros.component.html',
   styleUrl: './tabla-registros.component.css'
 })
 export class TablaRegistrosComponent implements OnInit{
-  sismos_data: any;
-  sismos_pages: any;
-  
+  features_data: any;
+  features_pages: any;
+  // Conexion con el componente ComentariosModalComponent
   @ViewChild(ComentariosModalComponent) modalComponent!: ComentariosModalComponent;
   modalRef? : BsModalRef;
   // Define las columnas de la tabla
   displayedColumns: string[] = ['id', 'magnitude', 'place', 'time', 'tsunami', 'mag_type', 'title', 'latitude', 'longitude', 'url','comentarios'];
 // Filtros
   selectedMag_types: string[] = [];
-  selectedPageSize: number = 50;
   currentPage: number = 0;
   totalPages: number = 0;
+  selectedPageSize: number = 50;
   params: object = {per_page:this.selectedPageSize};
   idFilter: string = '';
   constructor(private apiService: ApiService, private modalService: BsModalService) { }
@@ -42,7 +42,7 @@ export class TablaRegistrosComponent implements OnInit{
   transformData(data: any): any[] {
     let transformedData: any[] = [];
 
-    // Iterar sobre cada array dentro del objeto
+    // Itera sobre cada array dentro de la data
     for (let item in data) {
         // Transformar cada elemento del array y agregarlo al nuevo array
         transformedData.push({
@@ -58,7 +58,6 @@ export class TablaRegistrosComponent implements OnInit{
           longitude: data[item].attributes.coordinates.longitude,
           url: data[item].links.external_url
         });
-        // console.log(transformedData)
     }
     return transformedData;
   }
@@ -70,12 +69,16 @@ export class TablaRegistrosComponent implements OnInit{
       this.selectedMag_types.push(magType);
     }
   }
-  paginatorChange(event: any) {
-    // Llamar a la función para obtener datos con los nuevos parámetros de paginación
-    this.currentPage = event.pageIndex;
-    this.selectedPageSize = event.pageSize
+  // Cambia la cantidad de registros que se ven por pagina
+  changePageSize(size: number): void {
+    this.selectedPageSize = size;
+    this.params = {per_page:this.selectedPageSize};
+    this.getData();
+  }
+  // Cambia la pagina de la tabla
+  paginatorChange(event: PageChangedEvent): void {
+    this.currentPage = event.page - 1;
     this.params = { page: this.currentPage + 1, per_page: this.selectedPageSize }
-    console.log(this.params)
     this.getData();
   }
 // Recarga los registros de la tabla aplicando los filtros
@@ -87,16 +90,16 @@ export class TablaRegistrosComponent implements OnInit{
     }
     this.apiService.getFeatures(params).subscribe(
       (data: any) => {
-        this.sismos_data = this.transformData(data.data);
-        this.sismos_pages = data.pagination;
-        this.totalPages = this.sismos_pages.total;
+        this.features_data = this.transformData(data.data);
+        this.features_pages = data.pagination;
+        this.totalPages = this.features_pages.total;
       },
       error => {
         console.error('Error al obtener los datos:', error);
       }
     );
   }
-  
+  // Muestra el modal con los respectivos comentarios del feature
   showComments(id_comments:number){
     this.modalRef = this.modalService.show(ComentariosModalComponent,{
       initialState: {
