@@ -7,8 +7,8 @@ import { Observable } from 'rxjs'
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = 'http://localhost:3000/api/v1/feature';
-  // private apiUrl = 'https://backend-features-63bad564e0c5.herokuapp.com/api/v1/feature' // Prueba Heroku 2
+  // private apiUrl = 'http://localhost:3000/api/v1/feature';
+  private apiUrl = 'https://backend-features-63bad564e0c5.herokuapp.com/api/v1/feature' // Prueba Heroku 2
   constructor(private http: HttpClient) { }
   getFeatures(params?: any): Observable<any> {
     let queryParams = new HttpParams();
